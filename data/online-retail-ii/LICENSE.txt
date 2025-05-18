@@ -1,0 +1,10 @@
+
+This dataset is provided under the Creative Commons Attribution 4.0 International License.
+Original source: UCI Machine Learning Repository
+
+Dataset: Online Retail II Data Set
+Author: Daqing Chen
+Link: https://archive.ics.uci.edu/dataset/502/online+retail+ii
+
+License summary: You may share and adapt the material for any purpose, even commercially, as long as you give appropriate credit.
+
