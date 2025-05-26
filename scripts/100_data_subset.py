@@ -1,5 +1,5 @@
 
-# Script to extract a smaller subset of records from the main dataset to make it more manageable on slower devices.
+# Script to extract a smaller subset of records from the main dataset to make it more manageable on slower devices. 100 records is the target
 
 import pandas as pd
 
@@ -20,5 +20,5 @@ sheet2_reduced = sheet2_df.sample(n=100, random_state=42)
 # Writing the reduced dataset to a new spreadsheet without a row index
 
 print("Stage 3 - Output reduced datasets to new files")
-sheet1_reduced.to_excel("../outputs/sheets/online_retail_II_reduced_0910.xlsx", index=False)
-sheet2_reduced.to_excel("../outputs/sheets/online_retail_II_reduced_1011.xlsx", index=False)
+sheet1_reduced.to_excel("../outputs/sheets/online_retail_II_100_records_0910.xlsx", index=False)
+sheet2_reduced.to_excel("../outputs/sheets/online_retail_II_100_records_1011.xlsx", index=False)
