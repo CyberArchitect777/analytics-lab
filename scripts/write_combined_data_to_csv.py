@@ -2,6 +2,7 @@
 # Script to merge the data from both sheets in Online_Retail_II and write it to a CSV file for greater performance.
 
 import pandas as pd
+import os
 
 # Load the first sheet (2009–2010)
 print("Stage 1a - Reading in first Online Retail II sheet")
@@ -15,6 +16,13 @@ sheet2_df = pd.read_excel("../data/online_retail_II/online_retail_II.xlsx", shee
 print("Stage 2 - Combining both sheets into a single dataset")
 combined_df = pd.concat([sheet1_df, sheet2_df], ignore_index=True)
 
+# Create CSV storage directory if it doesn't already exist
+
+print("Stage 3 - Create CSV output directory if it doesn't exist")
+
+if not os.path.exists("../outputs/csv"):
+	            os.makedirs("../outputs/csv")
+
 # Write the combined DataFrame to a CSV file
-print("Stage 3 - Writing combined dataset to a CSV file")
+print("Stage 4 - Writing combined dataset to a CSV file")
 combined_df.to_csv("../outputs/csv/online_retail_II_combined.csv", index=False)
