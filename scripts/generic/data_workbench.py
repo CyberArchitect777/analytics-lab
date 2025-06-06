@@ -98,3 +98,49 @@ def display_dataframe_info(df: pd.DataFrame) -> None:
         print(df[column].value_counts().tail(5))  # Display bottom 5 most rare values
         print(f"Unique values count: {df[column].nunique()}")
 
+def remove_columns_via_list(df: pd.DataFrame, column_names: list) -> pd.DataFrame:
+    """
+    Remove specified columns from the DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame from which to remove the columns.
+    column_names (list): A list of column names to remove.
+
+    Returns:
+    pd.DataFrame: The DataFrame with the specified columns removed.
+    """
+
+    existing_columns = [col for col in column_names if col in df.columns]
+    
+    if existing_columns:
+        df = df.drop(columns=existing_columns)
+        print(f"Columns {existing_columns} removed successfully.")
+    else:
+        print("None of the specified columns exist in the DataFrame.")
+    
+    return df
+
+def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index: int) -> pd.DataFrame:
+    """
+    Remove records from the DataFrame by index range.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame from which to remove the records.
+    start_index (int): The starting index of the range to remove.
+    end_index (int): The ending index of the range to remove.
+
+    Returns:
+    pd.DataFrame: The DataFrame with the specified records removed.
+    """
+
+    if start_index < 0 or end_index >= len(df):
+        print("Invalid index range specified.")
+        return df
+    
+    indices_to_remove = list(range(start_index, end_index + 1))
+    
+    df = df.drop(index=indices_to_remove)
+    print(f"Records from index {start_index} to {end_index} removed successfully.")
+    
+    return df
+
