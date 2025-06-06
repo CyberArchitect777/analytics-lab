@@ -160,3 +160,25 @@ def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index
     
     return df
 
+def sort_fields(df: pd.DataFrame, sort_by: str, ascending: bool = True) -> pd.DataFrame:
+    """
+    Sort the DataFrame by a specified field.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to sort.
+    sort_by (str): The column name to sort by.
+    ascending (bool): Whether to sort in ascending order. Defaults to True.
+
+    Returns:
+    pd.DataFrame: The sorted DataFrame.
+    """
+
+    if sort_by not in df.columns:
+        print(f"Column '{sort_by}' does not exist in the DataFrame.")
+        return df
+    
+    df = df.sort_values(by=sort_by, ascending=ascending)
+    print(f"DataFrame sorted by '{sort_by}' in {'ascending' if ascending else 'descending'} order.")
+    
+    return df
+
