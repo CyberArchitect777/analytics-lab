@@ -6,10 +6,10 @@ import os
 
 # Load the first sheet (2009–2010)
 print("Stage 1a - Reading in first Online Retail II sheet")
-sheet1_df = pd.read_excel("../data/online_retail_II/online_retail_II.xlsx", sheet_name="Year 2009-2010")
+sheet1_df = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name="Year 2009-2010")
 # Load the second sheet (2010-2011)
 print("Stage 1b - Reading in second Online Retail II sheet")
-sheet2_df = pd.read_excel("../data/online_retail_II/online_retail_II.xlsx", sheet_name="Year 2010-2011")
+sheet2_df = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name="Year 2010-2011")
 
 # Combine both sheets into a single DataFrame (they have the same format)
 
@@ -20,9 +20,9 @@ combined_df = pd.concat([sheet1_df, sheet2_df], ignore_index=True)
 
 print("Stage 3 - Create CSV output directory if it doesn't exist")
 
-if not os.path.exists("../outputs/csv"):
-	            os.makedirs("../outputs/csv")
+if not os.path.exists("../../outputs/csv"):
+	            os.makedirs("../../outputs/csv")
 
 # Write the combined DataFrame to a CSV file
 print("Stage 4 - Writing combined dataset to a CSV file")
-combined_df.to_csv("../outputs/csv/online_retail_II_combined.csv", index=False)
+combined_df.to_csv("../../outputs/csv/online_retail_II_combined.csv", index=False)

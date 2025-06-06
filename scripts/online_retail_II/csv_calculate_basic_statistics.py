@@ -6,7 +6,7 @@ import pandas as pd
 # Load combined CSV file (this will need to have created by write_combined_data_to_csv.py first)
 
 print("\nStage 1 - Read in the Online Retail II CSV file")
-combined_df = pd.read_csv("../outputs/csv/online_retail_II_combined.csv")
+combined_df = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv")
 
 # Calculate the total sales
 
