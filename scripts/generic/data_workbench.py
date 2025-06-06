@@ -98,6 +98,22 @@ def display_dataframe_info(df: pd.DataFrame) -> None:
         print(df[column].value_counts().tail(5))  # Display bottom 5 most rare values
         print(f"Unique values count: {df[column].nunique()}")
 
+def show_first_x_records(df: pd.DataFrame, x: int) -> None:
+    """
+    Display the first x records of the DataFrame.
+
+    Parameters:
+    df (pd.DataFrame): The DataFrame to display.
+    x (int): The number of records to display.
+    """
+
+    if x <= 0:
+        print("Please provide a positive integer for the number of records to display.")
+        return
+    
+    print(f"\nFirst {x} Records:")
+    print(df.head(x))
+
 def remove_columns_via_list(df: pd.DataFrame, column_names: list) -> pd.DataFrame:
     """
     Remove specified columns from the DataFrame.
