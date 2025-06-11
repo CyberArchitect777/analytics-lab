@@ -1,5 +1,5 @@
 
-# Program to provide a number of data transformation functions for generic use
+# Library script to provide a number of data transformation functions for generic use
 
 import pandas as pd
 
