@@ -16,6 +16,7 @@ def help():
     print("\nCommands:")
     print("--display-info = Display information on a input file")
     print("--first-x-records = Display the first x records of the input file")
+    print("--remove-columns-by-name = Remove columns from the input file by name")
     print("--help = Help\n")
 
 def main():
@@ -43,7 +44,7 @@ def main():
             display_info(absolute_path)
         elif command == "--first-x-records":
             print("Please provide the number of records to display")
-    elif len(sys.argv) == 4:
+    else:
         command = sys.argv[2]
         if command == "--display-info":
             display_info(absolute_path)
@@ -54,9 +55,9 @@ def main():
             except ValueError:
                 print("Please provide a valid integer for the number of records to display.")
                 sys.exit(1)
-    else:
-        help()
-        sys.exit(1)
+        elif command == "--remove-columns-by-name":
+            column_names = sys.argv[3:]
+            remove_columns_by_name(absolute_path, column_names)
 
 def check_file_path(file_path):
     """
@@ -174,6 +175,23 @@ def display_first_x_records(file_path, x):
     try:
         df = load_file(file_path)
         dw.show_first_x_records(df, x)
+    except Exception as e:
+        print(f"An error occurred while processing the input file: {e}")
+
+
+def remove_columns_by_name(file_path, column_names):
+    """
+    Remove specified columns from the input file by a list of names.
+    
+    Parameters:
+    file_path (str): The path to the input file.
+    column_names (list): A list of column names to remove.
+    """
+    
+    try:
+        df = load_file(file_path)
+        df = dw.remove_columns_via_list(df, column_names)
+        save_file(df, file_path)
     except Exception as e:
         print(f"An error occurred while processing the input file: {e}")
 
