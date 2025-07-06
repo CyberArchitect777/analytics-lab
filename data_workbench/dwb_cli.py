@@ -1,9 +1,9 @@
 
-# Data Workbench command-line program for generic data processing tasks.
+# Data Workbench command-line version for generic data processing tasks.
 
 import sys
 import os
-import data_workbench_library as dw
+import core as dw
 
 def help():
     """
@@ -26,6 +26,7 @@ def main():
     """
     
     print("\nData Workbench")
+    print("\nCommand-line edition")
     print("Version 0.1.0")
     print("By Barrie Millar")
     print("A script to perform generic data transformation tasks\n")
