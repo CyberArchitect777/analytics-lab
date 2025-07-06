@@ -3,12 +3,27 @@
 
 import pandas as pd
 
-def load_csv(file_path: str) -> pd.DataFrame:
+"""
+def output_destination(message, output_destination: callable = print) -> None:
+
+    
+    Output a message to the console or to an alternative passed destination.
+
+    Parameters:
+    message (str): The message to output.
+    output_destination (callable, optional): A function to handle the output, defaults to print.
+    
+    output_destination(message)
+"""
+
+def load_csv(file_path: str, output_destination: callable = print) -> pd.DataFrame:
+
     """
     Load a CSV file into a DataFrame.
 
     Parameters:
     file_path (str): The path to the CSV file.
+    output_destination (callable, optional): The function to call to output the message
 
     Returns:
     pd.DataFrame: The loaded DataFrame.
@@ -16,111 +31,118 @@ def load_csv(file_path: str) -> pd.DataFrame:
 
     try:
         df = pd.read_csv(file_path)
-        print(f"CSV file '{file_path}' loaded successfully.")
+        output_destination(f"CSV file '{file_path}' loaded successfully.")
         return df
     except FileNotFoundError:
-        print(f"File '{file_path}' not found.")
+        output_destination(f"File '{file_path}' not found.")
         return pd.DataFrame()  # Return an empty DataFrame if the file is not found
     
-def load_excel(file_path: str, sheet_name: str = None) -> pd.DataFrame:
+def load_excel(file_path: str, output_destination: callable = print, sheet_name: str = None) -> pd.DataFrame:
+    
     """
     Load an Excel file into a DataFrame.
 
     Parameters:
     file_path (str): The path to the Excel file.
+    output_destination (callable, optional): The function to call to output the message
     sheet_name (str, optional): The name of the sheet to load. If None, loads the first sheet.
-
+    
     Returns:
     pd.DataFrame: The loaded DataFrame.
     """
 
     try:
         df = pd.read_excel(file_path, sheet_name=sheet_name)
-        print(f"Excel file '{file_path}' loaded successfully.")
+        output_destination(f"Excel file '{file_path}' loaded successfully.")
         return df
     except FileNotFoundError:
-        print(f"File '{file_path}' not found.")
+        output_destination(f"File '{file_path}' not found.")
         return pd.DataFrame()  # Return an empty DataFrame if the file is not found
     
-def save_to_excel(df: pd.DataFrame, file_path: str, sheet_name: str = 'Sheet1') -> None:
+def save_to_excel(df: pd.DataFrame, file_path: str, output_destination: callable = print, sheet_name: str = 'Sheet1') -> None:
     """
     Save a DataFrame to an Excel file.
 
     Parameters:
     df (pd.DataFrame): The DataFrame to save.
     file_path (str): The path where the Excel file will be saved.
+    output_destination (callable, optional): The function to call to output the message
     sheet_name (str, optional): The name of the sheet in the Excel file. Defaults to 'Sheet1'.
     """
 
     try:
         df.to_excel(file_path, sheet_name=sheet_name, index=False)
-        print(f"DataFrame saved to '{file_path}' successfully.")
+        output_destination(f"DataFrame saved to '{file_path}' successfully.")
     except Exception as e:
-        print(f"An error occurred while saving to Excel: {e}")
+        output_destination(f"An error occurred while saving to Excel: {e}")
     
-def save_to_csv(df: pd.DataFrame, file_path: str) -> None:
+def save_to_csv(df: pd.DataFrame, file_path: str, output_destination: callable = print) -> None:
     """
     Save a DataFrame to a CSV file.
 
     Parameters:
     df (pd.DataFrame): The DataFrame to save.
     file_path (str): The path where the CSV file will be saved.
+    output_destination (callable, optional): The function to call to output the message
     """
 
     try:
         df.to_csv(file_path, index=False)
-        print(f"DataFrame saved to '{file_path}' successfully.")
+        output_destination(f"DataFrame saved to '{file_path}' successfully.")
     except Exception as e:
-        print(f"An error occurred while saving to CSV: {e}")
+        output_destination(f"An error occurred while saving to CSV: {e}")
 
-def display_dataframe_info(df: pd.DataFrame) -> None:
+def display_dataframe_info(df: pd.DataFrame, output_destination: callable = print) -> None:
     """
     Display basic information about the DataFrame.
 
     Parameters:
     df (pd.DataFrame): The DataFrame to analyze.
+    output_destination (callable, optional): The function to call to output the message
     """
 
-    print("\nDataFrame Information:")
+    output_destination("\nDataFrame Information:")
     df.info()
-    print("\nFirst 5 Rows:")
-    print(df.head())
-    print("\nStatistical Summary:")
-    print(df.describe())
-    print("\nNull Values Count:")
-    print(df.isnull().sum())
-    print("\nData Types:")
-    print(df.dtypes)
+    output_destination("\nFirst 5 Rows:")
+    output_destination(df.head())
+    output_destination("\nStatistical Summary:")
+    output_destination(df.describe())
+    output_destination("\nNull Values Count:")
+    output_destination(df.isnull().sum())
+    output_destination("\nData Types:")
+    output_destination(df.dtypes)
     
     for column in df.columns:
-        print(f"\nValue Counts for '{column}':")
-        print(df[column].value_counts().head(5))  # Display top 5 most common values
-        print(df[column].value_counts().tail(5))  # Display bottom 5 most rare values
-        print(f"Unique values count: {df[column].nunique()}")
+        output_destination(f"\nValue Counts for '{column}':")
+        output_destination(df[column].value_counts().head(5))  # Display top 5 most common values
+        output_destination(df[column].value_counts().tail(5))  # Display bottom 5 most rare values
+        output_destination(f"Unique values count: {df[column].nunique()}")
 
-def show_first_x_records(df: pd.DataFrame, x: int) -> None:
+def show_first_x_records(df: pd.DataFrame, x: int, output_destination: callable = print) -> None:
     """
     Display the first x records of the DataFrame.
 
     Parameters:
     df (pd.DataFrame): The DataFrame to display.
     x (int): The number of records to display.
+    output_destination (callable, optional): The function to call to output the message
     """
 
     if x <= 0:
-        print("Please provide a positive integer for the number of records to display.")
+        output_destination("Please provide a positive integer for the number of records to display.")
         return
     
-    print(f"\nFirst {x} Records:")
-    print(df.head(x))
+    output_destination(f"\nFirst {x} Records:")
+    output_destination(df.head(x))
 
-def remove_columns_via_list(df: pd.DataFrame, column_names: list) -> pd.DataFrame:
+def remove_columns_via_list(df: pd.DataFrame, column_names: list, output_destination: callable = print) -> pd.DataFrame:
     """
     Remove specified columns from the DataFrame.
 
     Parameters:
     df (pd.DataFrame): The DataFrame from which to remove the columns.
     column_names (list): A list of column names to remove.
+    output_destination (callable, optional): The function to call to output the message
 
     Returns:
     pd.DataFrame: The DataFrame with the specified columns removed.
@@ -130,13 +152,13 @@ def remove_columns_via_list(df: pd.DataFrame, column_names: list) -> pd.DataFram
     
     if existing_columns:
         df = df.drop(columns=existing_columns)
-        print(f"Columns {existing_columns} removed successfully.")
+        output_destination(f"Columns {existing_columns} removed successfully.")
     else:
-        print("None of the specified columns exist in the DataFrame.")
+        output_destination("None of the specified columns exist in the DataFrame.")
     
     return df
 
-def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index: int) -> pd.DataFrame:
+def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index: int, output_destination: callable = print) -> pd.DataFrame:
     """
     Remove records from the DataFrame by index range.
 
@@ -144,23 +166,24 @@ def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index
     df (pd.DataFrame): The DataFrame from which to remove the records.
     start_index (int): The starting index of the range to remove.
     end_index (int): The ending index of the range to remove.
+    output_destination (callable, optional): The function to call to output the message
 
     Returns:
     pd.DataFrame: The DataFrame with the specified records removed.
     """
 
     if start_index < 0 or end_index >= len(df):
-        print("Invalid index range specified.")
+        output_destination("Invalid index range specified.")
         return df
     
     indices_to_remove = list(range(start_index, end_index + 1))
     
     df = df.drop(index=indices_to_remove)
-    print(f"Records from index {start_index} to {end_index} removed successfully.")
+    output_destination(f"Records from index {start_index} to {end_index} removed successfully.")
     
     return df
 
-def sort_fields(df: pd.DataFrame, sort_by: str, ascending: bool = True) -> pd.DataFrame:
+def sort_fields(df: pd.DataFrame, sort_by: str, ascending: bool = True, output_destination: callable = print) -> pd.DataFrame:
     """
     Sort the DataFrame by a specified field.
 
@@ -168,17 +191,18 @@ def sort_fields(df: pd.DataFrame, sort_by: str, ascending: bool = True) -> pd.Da
     df (pd.DataFrame): The DataFrame to sort.
     sort_by (str): The column name to sort by.
     ascending (bool): Whether to sort in ascending order. Defaults to True.
+    output_destination (callable, optional): The function to call to output the message
 
     Returns:
     pd.DataFrame: The sorted DataFrame.
     """
 
     if sort_by not in df.columns:
-        print(f"Column '{sort_by}' does not exist in the DataFrame.")
+        output_destination(f"Column '{sort_by}' does not exist in the DataFrame.")
         return df
     
     df = df.sort_values(by=sort_by, ascending=ascending)
-    print(f"DataFrame sorted by '{sort_by}' in {'ascending' if ascending else 'descending'} order.")
+    output_destination(f"DataFrame sorted by '{sort_by}' in {'ascending' if ascending else 'descending'} order.")
     
     return df
 
