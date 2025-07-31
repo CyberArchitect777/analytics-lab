@@ -4,8 +4,9 @@
 import sys
 import os
 import core as dw
+import pandas as pd
 
-def help():
+def help() -> None:
     """
     Outputs help information to the user if asked
     for or if an invalid function is specified
@@ -19,7 +20,7 @@ def help():
     print("--remove-columns-by-name = Remove columns from the input file by name")
     print("--help = Help\n")
 
-def main():
+def main() -> None:
     
     """
     The first function run upon program start to provide the command-line interface
@@ -60,7 +61,7 @@ def main():
             column_names = sys.argv[3:]
             remove_columns_by_name(absolute_path, column_names)
 
-def check_file_path(file_path):
+def check_file_path(file_path: str) -> bool:
     """
     Check if the provided file path exists and has a valid extension.
     
@@ -81,7 +82,7 @@ def check_file_path(file_path):
     
     return True
 
-def load_file(file_path):
+def load_file(file_path: str) -> pd.DataFrame:
     """
     Load a file based on its extension.
     
@@ -101,7 +102,7 @@ def load_file(file_path):
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
     
-def save_file(df, file_path):
+def save_file(df: pd.DataFrame, file_path: str) -> None:
     """
     Save a DataFrame to a file based on its extension.
     
@@ -119,7 +120,7 @@ def save_file(df, file_path):
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
 
-def detect_extension(file_path):
+def detect_extension(file_path: str) -> str:
     """
     Detect the file extension of the given file path.
     
@@ -133,7 +134,7 @@ def detect_extension(file_path):
     _, ext = os.path.splitext(file_path)
     return ext.lower().replace('.', '')
 
-def is_valid_extension(file_path):
+def is_valid_extension(file_path: str) -> bool:
     """
     Check if the file has a valid extension.
     
@@ -150,7 +151,7 @@ def is_valid_extension(file_path):
     else:
         return False
 
-def display_info(file_path):
+def display_info(file_path: str) -> None:
     """
     Display information about the input file.
     
@@ -164,7 +165,7 @@ def display_info(file_path):
     except Exception as e:
         print(f"An error occurred while processing the input file: {e}")
 
-def display_first_x_records(file_path, x):
+def display_first_x_records(file_path: str, x: int) -> None:
     """
     Display the first x records of the input file.
     
@@ -179,8 +180,7 @@ def display_first_x_records(file_path, x):
     except Exception as e:
         print(f"An error occurred while processing the input file: {e}")
 
-
-def remove_columns_by_name(file_path, column_names):
+def remove_columns_by_name(file_path: str, column_names: list) -> None:
     """
     Remove specified columns from the input file by a list of names.
     
