@@ -158,20 +158,21 @@ def remove_columns_via_list(df: pd.DataFrame, column_names: list, output_destina
     
     return df
 
-def remove_records_via_index_range(df: pd.DataFrame, start_index: int, end_index: int, output_destination: callable = print) -> pd.DataFrame:
+def remove_records_via_index_range(df: pd.DataFrame, start_index: int, records_to_remove: int, output_destination: callable = print) -> pd.DataFrame:
     """
     Remove records from the DataFrame by index range.
 
     Parameters:
     df (pd.DataFrame): The DataFrame from which to remove the records.
     start_index (int): The starting index of the range to remove.
-    end_index (int): The ending index of the range to remove.
+    records_to_remove (int): The number of records to remove starting from the start_index.
     output_destination (callable, optional): The function to call to output the message
 
     Returns:
     pd.DataFrame: The DataFrame with the specified records removed.
     """
 
+    end_index = start_index + records_to_remove
     if start_index < 0 or end_index >= len(df):
         output_destination("Invalid index range specified.")
         return df

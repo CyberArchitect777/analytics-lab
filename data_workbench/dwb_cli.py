@@ -18,6 +18,7 @@ def help() -> None:
     print("--display-info = Display information on a input file")
     print("--first-x-records = Display the first x records of the input file")
     print("--remove-columns-by-name = Remove columns from the input file by name")
+    print("--remove-records-by-index = Remove records by start index and number of records\n")
     print("--help = Help\n")
 
 def main() -> None:
@@ -45,7 +46,11 @@ def main() -> None:
         if command == "--display-info":
             display_info(absolute_path)
         elif command == "--first-x-records":
-            print("Please provide the number of records to display")
+            print("Please provide the number of records to display\n")
+        elif command == "--remove-columns-by-name":
+            print("Please provide the names of the columns to remove\n")
+        elif command == "--remove-records-by-index":
+            print("Please provide the start index and number of records to remove\n")
     else:
         command = sys.argv[2]
         if command == "--display-info":
@@ -55,11 +60,19 @@ def main() -> None:
                 x = int(sys.argv[3])
                 display_first_x_records(absolute_path, x)
             except ValueError:
-                print("Please provide a valid integer for the number of records to display.")
+                print("Please provide a valid integer for the number of records to display.\n")
                 sys.exit(1)
         elif command == "--remove-columns-by-name":
             column_names = sys.argv[3:]
             remove_columns_by_name(absolute_path, column_names)
+        elif command == "--remove-records-by-index":
+            try:
+                start_index = int(sys.argv[3])
+                records_to_remove = int(sys.argv[4])
+                remove_records_by_index(absolute_path, start_index, records_to_remove)
+            except ValueError:
+                print("Please provide valid integers for the start index and number of records to be removed.\n")
+                sys.exit(1)
 
 def check_file_path(file_path: str) -> bool:
     """
@@ -130,7 +143,7 @@ def detect_extension(file_path: str) -> str:
     Returns:
     str: The file extension (e.g., 'csv', 'xlsx').
     """
-    
+
     _, ext = os.path.splitext(file_path)
     return ext.lower().replace('.', '')
 
@@ -192,6 +205,23 @@ def remove_columns_by_name(file_path: str, column_names: list) -> None:
     try:
         df = load_file(file_path)
         df = dw.remove_columns_via_list(df, column_names)
+        save_file(df, file_path)
+    except Exception as e:
+        print(f"An error occurred while processing the input file: {e}")
+
+def remove_records_by_index(file_path: str, start_index: int, records_to_remove: int) -> None:
+    """
+    Remove records from the input file by index range.
+    
+    Parameters:
+    file_path (str): The path to the input file.
+    start_index (int): The starting index of the records to remove.
+    records_to_remove (int): The number of records to remove starting from the start_index.
+    """
+    
+    try:
+        df = load_file(file_path)
+        df = df.drop(df.index[start_index:records_to_remove + start_index])
         save_file(df, file_path)
     except Exception as e:
         print(f"An error occurred while processing the input file: {e}")
