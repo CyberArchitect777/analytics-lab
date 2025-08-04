@@ -3,19 +3,6 @@
 
 import pandas as pd
 
-"""
-def output_destination(message, output_destination: callable = print) -> None:
-
-    
-    Output a message to the console or to an alternative passed destination.
-
-    Parameters:
-    message (str): The message to output.
-    output_destination (callable, optional): A function to handle the output, defaults to print.
-    
-    output_destination(message)
-"""
-
 def load_csv(file_path: str, output_destination: callable = print) -> pd.DataFrame:
 
     """
