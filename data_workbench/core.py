@@ -3,7 +3,7 @@
 
 import pandas as pd
 
-def load_csv(file_path: str, output_destination: callable = print) -> pd.DataFrame:
+def load_csv(file_path: str, output_destination: callable = print) -> tuple[int, pd.DataFrame]:
 
     """
     Load a CSV file into a DataFrame.
@@ -13,18 +13,16 @@ def load_csv(file_path: str, output_destination: callable = print) -> pd.DataFra
     output_destination (callable, optional): The function to call to output the message
 
     Returns:
-    pd.DataFrame: The loaded DataFrame.
+    tuple[int, pd.DataFrame]: A tuple containing a status code (0 for success, 1 for failure) and the loaded DataFrame.
     """
 
     try:
         df = pd.read_csv(file_path)
-        output_destination(f"CSV file '{file_path}' loaded successfully.")
-        return df
+        return 0, df
     except FileNotFoundError:
-        output_destination(f"File '{file_path}' not found.")
-        return pd.DataFrame()  # Return an empty DataFrame if the file is not found
+        return 1, pd.DataFrame()  # Return an empty DataFrame if the file is not found
     
-def load_excel(file_path: str, output_destination: callable = print, sheet_name: str = None) -> pd.DataFrame:
+def load_excel(file_path: str, output_destination: callable = print, sheet_name: str = None) -> tuple[int, pd.DataFrame]:
     
     """
     Load an Excel file into a DataFrame.
@@ -35,18 +33,16 @@ def load_excel(file_path: str, output_destination: callable = print, sheet_name:
     sheet_name (str, optional): The name of the sheet to load. If None, loads the first sheet.
     
     Returns:
-    pd.DataFrame: The loaded DataFrame.
+    tuple[int, pd.DataFrame]: A tuple containing a status code (0 for success, 1 for failure) and the loaded DataFrame.
     """
 
     try:
         df = pd.read_excel(file_path, sheet_name=sheet_name)
-        output_destination(f"Excel file '{file_path}' loaded successfully.")
-        return df
+        return 0, df
     except FileNotFoundError:
-        output_destination(f"File '{file_path}' not found.")
-        return pd.DataFrame()  # Return an empty DataFrame if the file is not found
+        return 1, pd.DataFrame()  # Return an empty DataFrame if the file is not found
     
-def save_to_excel(df: pd.DataFrame, file_path: str, output_destination: callable = print, sheet_name: str = 'Sheet1') -> None:
+def save_to_excel(df: pd.DataFrame, file_path: str, output_destination: callable = print, sheet_name: str = 'Sheet1') -> int:
     """
     Save a DataFrame to an Excel file.
 
@@ -55,15 +51,18 @@ def save_to_excel(df: pd.DataFrame, file_path: str, output_destination: callable
     file_path (str): The path where the Excel file will be saved.
     output_destination (callable, optional): The function to call to output the message
     sheet_name (str, optional): The name of the sheet in the Excel file. Defaults to 'Sheet1'.
+
+    Returns:
+    int: 0 if the file was saved successfully, 1 if there was an error
     """
 
     try:
         df.to_excel(file_path, sheet_name=sheet_name, index=False)
-        output_destination(f"DataFrame saved to '{file_path}' successfully.")
+        return 0
     except Exception as e:
-        output_destination(f"An error occurred while saving to Excel: {e}")
+        return 1
     
-def save_to_csv(df: pd.DataFrame, file_path: str, output_destination: callable = print) -> None:
+def save_to_csv(df: pd.DataFrame, file_path: str, output_destination: callable = print) -> int:
     """
     Save a DataFrame to a CSV file.
 
@@ -71,41 +70,44 @@ def save_to_csv(df: pd.DataFrame, file_path: str, output_destination: callable =
     df (pd.DataFrame): The DataFrame to save.
     file_path (str): The path where the CSV file will be saved.
     output_destination (callable, optional): The function to call to output the message
+
+    Returns:
+    int: 0 if the file was saved successfully, 1 if there was an error
     """
 
     try:
         df.to_csv(file_path, index=False)
-        output_destination(f"DataFrame saved to '{file_path}' successfully.")
+        return 0
     except Exception as e:
-        output_destination(f"An error occurred while saving to CSV: {e}")
+        return 1
 
-def display_dataframe_info(df: pd.DataFrame, output_destination: callable = print) -> None:
+def display_dataframe_info(df: pd.DataFrame, output_destination: callable = print) -> tuple[int, str]:
     """
     Display basic information about the DataFrame.
 
     Parameters:
     df (pd.DataFrame): The DataFrame to analyze.
     output_destination (callable, optional): The function to call to output the message
+
+    Returns:
+    tuple[int, str]: A tuple containing a status code (0 for success, 1 for failure) and a string with the textual output for the user.
     """
 
-    output_destination("\nDataFrame Information:")
-    df.info()
-    output_destination("\nFirst 5 Rows:")
-    output_destination(df.head())
-    output_destination("\nStatistical Summary:")
-    output_destination(df.describe())
-    output_destination("\nNull Values Count:")
-    output_destination(df.isnull().sum())
-    output_destination("\nData Types:")
-    output_destination(df.dtypes)
+    output_text = "\nDataFrame Information:" + df.info()
+    output_text += output_text + "\nFirst 5 Rows:" + df.head()
+    output_text += output_text + "\nStatistical Summary: " + df.describe()
+    output_text += output_text + "\nNull Values Count: " + df.isnull().sum()
+    output_text += output_text + "\nData Types: " + df.dtypes
     
     for column in df.columns:
-        output_destination(f"\nValue Counts for '{column}':")
-        output_destination(df[column].value_counts().head(5))  # Display top 5 most common values
-        output_destination(df[column].value_counts().tail(5))  # Display bottom 5 most rare values
-        output_destination(f"Unique values count: {df[column].nunique()}")
+        output_text += output_text + "\nValue Counts for '{column}':"
+        output_text += output_text + df[column].value_counts().head(5)  # Display top 5 most common values
+        output_text += output_text + df[column].value_counts().tail(5)  # Display bottom 5 most rare values
+        output_text += output_text + "\nUnique values count: " + str(df[column].nunique())
 
-def show_first_x_records(df: pd.DataFrame, x: int, output_destination: callable = print) -> None:
+    return 0, output_text
+
+def show_first_x_records(df: pd.DataFrame, x: int, output_destination: callable = print) -> tuple[int, str]:
     """
     Display the first x records of the DataFrame.
 
@@ -116,12 +118,11 @@ def show_first_x_records(df: pd.DataFrame, x: int, output_destination: callable 
     """
 
     if x <= 0:
-        output_destination("\nPlease provide a positive integer for the number of records to display.\n")
-        return
+        return 1, ""
+    else:
+        return 0, df.head(x)
     
-    output_destination(f"\nFirst {x} Records:")
-    output_destination(df.head(x))
-    output_destination("")
+# Continue converting interface style from textual output to returned values from here.
 
 def remove_columns_via_list(df: pd.DataFrame, column_names: list, output_destination: callable = print) -> pd.DataFrame:
     """
