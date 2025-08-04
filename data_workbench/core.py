@@ -116,11 +116,12 @@ def show_first_x_records(df: pd.DataFrame, x: int, output_destination: callable 
     """
 
     if x <= 0:
-        output_destination("Please provide a positive integer for the number of records to display.")
+        output_destination("\nPlease provide a positive integer for the number of records to display.\n")
         return
     
     output_destination(f"\nFirst {x} Records:")
     output_destination(df.head(x))
+    output_destination("")
 
 def remove_columns_via_list(df: pd.DataFrame, column_names: list, output_destination: callable = print) -> pd.DataFrame:
     """
