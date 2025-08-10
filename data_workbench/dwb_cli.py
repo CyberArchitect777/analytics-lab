@@ -19,7 +19,6 @@ def help() -> None:
     print("--first-x-records = Display the first x records of the input file")
     print("--remove-columns-by-name = Remove columns from the input file by name")
     print("--remove-records-by-index = Remove records by start index and number of records")
-    print("--help = Help\n")
 
 def main() -> None:
     
