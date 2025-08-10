@@ -33,15 +33,18 @@ def main() -> None:
     print("By Barrie Millar")
     print("A script to perform generic data transformation tasks\n")
 
+    # Assuming the first parameter is an input file, create a variable to set it to absolute
+    # regardless of the original form.
+
     if len(sys.argv) > 1 and check_file_path(sys.argv[1]):
         absolute_path = os.path.abspath(sys.argv[1])
 
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1: # If no arguments are provided, display help
         help()
         sys.exit(1)
-    elif len(sys.argv) == 2:
+    elif len(sys.argv) == 2: # If only a file is specified, display info on it.
         display_info(absolute_path)
-    elif len(sys.argv) == 3:
+    elif len(sys.argv) == 3: # Assume a path and command are provided with no parameters
         command = sys.argv[2]
         if command == "--display-info":
             display_info(absolute_path)
@@ -51,7 +54,7 @@ def main() -> None:
             print("Please provide the names of the columns to remove\n")
         elif command == "--remove-records-by-index":
             print("Please provide the start index and number of records to remove\n")
-    else:
+    else: # Assume a file, command and at least one parameter are provided
         command = sys.argv[2]
         if command == "--display-info":
             display_info(absolute_path)
