@@ -20,7 +20,7 @@ def start_transform() -> None:
 	#print("Stage 2 - Rows/columns - " + str(df_joined.shape))
 	# Output file to CSV
 	print("Stage 2c - Write CSV...")
-	df_joined.to_csv("online_retail_II.csv", index=False, encoding="utf-8", lineterminator="\n")
+	df_joined.to_csv("../../outputs/csv/online_retail_II_combined.csv", index=False, encoding="utf-8", lineterminator="\n")
 	# Write out a dataset table listing to html
 	print("Stage 3 - Output dataset table to HTML")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
