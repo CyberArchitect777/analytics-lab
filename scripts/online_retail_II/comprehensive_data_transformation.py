@@ -49,6 +49,13 @@ def start_transform() -> None:
 	print("Post-Duplicate Remove Dataset: " + str(df_subset.shape))
 	print("\nStage 13 - Output preview3.html")
 	output_dataset_to_html(df_subset, "../../outputs/html/preview3.html")
+	print("Stage 14 - Group by Invoice to get total Price per Invoice")
+	# Without reset_index, the groupby becomes the index, otherwise the index is numerical.
+	df_group = df_joined.groupby("Invoice").agg(Total_Price=("Price","sum")).reset_index() 
+	print("Stage 15 - Rename Total_Price to Total Price")
+	df_group = df_group.rename(columns={"Total_Price":"Total Price"})
+	print("Stage 16 - Output preview4.html")
+	output_dataset_to_html(df_group, "../../outputs/html/preview4.html")
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
