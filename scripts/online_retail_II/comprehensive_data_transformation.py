@@ -5,11 +5,11 @@ from pathlib import Path
 
 def start_transform() -> None:
 	# Input Excel
-	#print("Stage 1 - Read Excel file...")
+	#print("\nStage 1 - Read Excel file...")
 	#df1 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=0)
 	#df2 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=1)
 	# Input CSV
-	print("Stage 1 - Read CSV file...")
+	print("\nStage 1 - Read CSV file...")
 	df_joined = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
 	# Print Excel sheet sizes in rows and columns
 	#print("Stage 2a - Excel 1 Rows/columns - " + str(df1.shape))
@@ -32,8 +32,11 @@ def start_transform() -> None:
 	# Extract only numbers at the start of the field and replace blanks with -1
 	df_joined["Customer ID"] = df_joined["Customer ID"].str.extract(r"(\d+)")
 	df_joined["Customer ID"] = df_joined["Customer ID"].fillna("-1")
+	print("\nStage 7 - Clean up date field into dd-mm-yyy format")
+	df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"])
+	df_joined["InvoiceDate"] = df_joined['InvoiceDate'].dt.strftime("%d-%m-%Y")
 	# Preview output
-	print("Last stage - Output dataset table to HTML\n")
+	print("\nLast stage - Output dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
 	
 def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
