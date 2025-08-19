@@ -35,8 +35,12 @@ def start_transform() -> None:
 	print("\nStage 7 - Clean up date field into dd-mm-yyy format")
 	df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"])
 	df_joined["InvoiceDate"] = df_joined['InvoiceDate'].dt.strftime("%d-%m-%Y")
-	# Preview output
-	print("\nLast stage - Output dataset table to HTML\n")
+	print("\nStage 8 - Select only a few fields")
+	df_subset = df_joined[["StockCode", "Description", "Price"]].copy()
+	print("\nStage 9 - Output subset dataset table to HTML\n")
+	output_dataset_to_html(df_subset, "../../outputs/html/preview1.html")
+	# Main preview output
+	print("Last stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
 	
 def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
