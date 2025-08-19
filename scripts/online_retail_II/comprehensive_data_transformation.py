@@ -5,29 +5,36 @@ from pathlib import Path
 
 def start_transform() -> None:
 	# Input Excel
-	print("Stage 1 - Read Excel file...")
-	df1 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=0)
-	df2 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=1)
+	#print("Stage 1 - Read Excel file...")
+	#df1 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=0)
+	#df2 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=1)
 	# Input CSV
-	#print("Stage 1 - Read CSV file...")
-	#df_joined = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
+	print("Stage 1 - Read CSV file...")
+	df_joined = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
 	# Print Excel sheet sizes in rows and columns
-	print("Stage 2a - Excel 1 Rows, columns" + str(df1.shape))
-	print("Stage 2b - Excel 2 Rows, columns" + str(df2.shape))
+	#print("Stage 2a - Excel 1 Rows/columns - " + str(df1.shape))
+	#print("Stage 2b - Excel 2 Rows/columns - " + str(df2.shape))
 	# Combine the two Excel sheets into one dataset
-	df_joined = pd.concat([df1, df2])
+	#df_joined = pd.concat([df1, df2])
 	# Print combined dataset size in rows and columns
-	#print("Stage 2 - Rows/columns - " + str(df_joined.shape))
+	print("Stage 2 - Rows/columns - " + str(df_joined.shape))
 	# Output file to CSV
-	print("Stage 2c - Write CSV...")
-	df_joined.to_csv("../../outputs/csv/online_retail_II_combined.csv", index=False, encoding="utf-8", lineterminator="\n")
+	#print("Stage 2c - Write CSV...")
+	#df_joined.to_csv("../../outputs/csv/online_retail_II_combined.csv", index=False, encoding="utf-8", lineterminator="\n")
 	# Write out a dataset table listing to html
-	print("Stage 3 - Output dataset table to HTML")
-	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
-	print("Stage 4 - Output column statistical data for numerical fields\n")
+	print("Stage 3 - Output column statistical data for numerical fields\n")
 	print(df_joined.describe().to_string())
-	print("\nStage 5 - Show data columns and types\n")
+	print("\nStage 4 - Show data columns and types\n")
 	print(df_joined.dtypes)
+	print("\nStage 5 - Change data type of Customer ID to string")
+	df_joined = df_joined.astype({"Customer ID": "str"})
+	print("\nStage 6 - Clean up Customer ID field")
+	# Extract only numbers at the start of the field and replace blanks with -1
+	df_joined["Customer ID"] = df_joined["Customer ID"].str.extract(r"(\d+)")
+	df_joined["Customer ID"] = df_joined["Customer ID"].fillna("-1")
+	# Preview output
+	print("Last stage - Output dataset table to HTML\n")
+	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
 	
 def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
 	# Simple HTML export of the provided dataset
