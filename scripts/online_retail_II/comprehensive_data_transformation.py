@@ -78,8 +78,17 @@ def start_transform() -> None:
 	
 	print("Stage 18 - Output preview5.html")
 	output_dataset_to_html(df_filtered, "../../outputs/html/preview5.html")
-	# Main preview output
+
+	print("Stage 19 - Provide a random sample output")
+	df_random = df_joined.sample(n=100, random_state=42355)
+
+	print("Stage 20 - Output preview6.html")
+	output_dataset_to_html(df_random, "../../outputs/html/preview6.html")
+
+	print("Stage 21 - Create new fields Total_Price and Over_100 and calculate them using formulas")
+	df_joined = df_joined.assign(Total_Price=lambda x: x["Price"]*x["Quantity"], Over_100=lambda x: x["Total_Price"]>100)
 	
+	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
 	
