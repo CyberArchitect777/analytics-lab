@@ -87,7 +87,35 @@ def start_transform() -> None:
 
 	print("Stage 21 - Create new fields Total_Price and Over_100 and calculate them using formulas")
 	df_joined = df_joined.assign(Total_Price=lambda x: x["Price"]*x["Quantity"], Over_100=lambda x: x["Total_Price"]>100)
-	
+
+	print("Stage 22 - Create two new datasets")
+	dict_one = {
+		 "user_id": ["ab", "az"],
+		 "name": ["Bryan", "Claire"]
+	}
+	dict_two = {
+		 "user_id": ["ab", "az"],
+		 "position": ["senior", "junior"]
+	}
+	df1 = pd.DataFrame(dict_one)
+	df2 = pd.DataFrame(dict_two)
+
+	print("Stage 23 - Join the two new datasets by user_id")
+	df_merged = df1.merge(df2, on=["user_id"], how="inner", suffixes=("","_r"))
+
+	print("Stage 24 - Output preview7.html")
+	output_dataset_to_html(df_merged, "../../outputs/html/preview7.html")
+
+	print("Stage 25 - Append field from one dataset to another")
+	dict_three = {
+		"Employed": ["yes"]
+	}
+	df3 = pd.DataFrame(dict_three)
+	df_merged = df_merged.merge(df3, how="cross")
+
+	print("Stage 26 - Output preview8.html")
+	output_dataset_to_html(df_merged, "../../outputs/html/preview8.html")
+
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
