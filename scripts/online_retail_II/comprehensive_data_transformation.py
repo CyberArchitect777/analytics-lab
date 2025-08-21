@@ -135,6 +135,13 @@ def start_transform() -> None:
 	print("Stage 30 - Output preview10.html")
 	output_dataset_to_html(df_sample_dataset, "../../outputs/html/preview10.html")
 
+	print("Stage 31 - Select a few records and then transpose the main dataset to a new one")
+	df_transposed = df_joined.iloc[0:10]
+	df_transposed = df_transposed.transpose()
+
+	print("Stage 32 - Output preview11.html")
+	output_dataset_to_html(df_transposed, "../../outputs/html/preview11.html")
+
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
