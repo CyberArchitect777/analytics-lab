@@ -116,6 +116,25 @@ def start_transform() -> None:
 	print("Stage 26 - Output preview8.html")
 	output_dataset_to_html(df_merged, "../../outputs/html/preview8.html")
 
+	print("Stage 27 - Find and replace text in a dataset field")
+	df_findreplace = df_joined.copy()
+	df_findreplace["Customer ID"] = df_findreplace["Customer ID"].str.replace("13085", "99999", regex=False)
+
+	print("Stage 28 - Output preview9.html")
+	output_dataset_to_html(df_findreplace, "../../outputs/html/preview9.html")
+
+	print("Stage 29 - Create a new dataset and apply crosstab")
+	sample_dataset = {
+    "Department": ["Sales", "Sales", "HR", "HR", "IT", "IT", "Sales", "IT", "HR"],
+    "Gender": ["Male", "Female", "Female", "Male", "Male", "Female", "Male", "Female", "Female"],
+    "Hired": ["Yes", "No", "Yes", "Yes", "No", "Yes", "Yes", "No", "Yes"]
+	}
+	df_sample_dataset = pd.DataFrame(sample_dataset)
+	df_sample_dataset = pd.pivot_table(df_sample_dataset, index="Gender", columns="Department", values="Hired", aggfunc="count").reset_index()
+
+	print("Stage 30 - Output preview10.html")
+	output_dataset_to_html(df_sample_dataset, "../../outputs/html/preview10.html")
+
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
