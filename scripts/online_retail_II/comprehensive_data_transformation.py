@@ -65,6 +65,7 @@ def start_transform() -> None:
 	
 	print("Stage 14 - Group by Invoice to get total Price per Invoice")
 	# Without reset_index, the groupby becomes the index, otherwise the index is numerical.
+	# aggfunc includes things like "sum", "mean", "count", "min", "max", "median"
 	df_group = df_joined.groupby("Invoice").agg(Total_Price=("Price","sum")).reset_index() 
 	
 	print("Stage 15 - Rename Total_Price to Total Price")
@@ -141,6 +142,29 @@ def start_transform() -> None:
 
 	print("Stage 32 - Output preview11.html")
 	output_dataset_to_html(df_transposed, "../../outputs/html/preview11.html")
+
+	print("Stage 33 - Breaking up a data field into columns")
+
+	csv_test_file = {
+		 "field": [ "All data,is,here" ],
+	}
+	csv_test_data = pd.DataFrame(csv_test_file)
+	# n=1 specifies how many splits to perform, the rest are left in the last column. Expand = true sets the return as a DataFrame rather than a list of Series types
+	# Adds to csv_test_data
+	csv_test_data[["Field1", "Field2", "Field3"]] = csv_test_data["field"].str.split(",", n=3, expand=True)
+
+	print("Stage 34 - Output preview12.html")
+	output_dataset_to_html(csv_test_data, "../../outputs/html/preview12.html")
+
+	print("Stage 35 - Explore regex operations using copy dataset")
+	df_regex_work = df_joined.copy()
+	df_regex_work["Country"] = df_regex_work["Country"].str.replace(r"United Kingdom", "UK", regex=True)
+	df_regex_work["InvoiceDate"] = df_regex_work["InvoiceDate"].str.extract(r"(\d{4})")
+	df_regex_work = df_regex_work.astype({"Price": "str"})
+	df_regex_work["Is_Price_x.xx_Format"] = df_regex_work["Price"].str.match(r"^\d\.\d{2}.*$")
+
+	print("Stage 36 - Output preview13.html")
+	output_dataset_to_html(df_regex_work, "../../outputs/html/preview13.html")
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
