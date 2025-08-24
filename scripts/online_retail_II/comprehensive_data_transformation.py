@@ -3,6 +3,7 @@
 import pandas as pd
 from glob import glob
 from pathlib import Path
+from chardet.universaldetector import UniversalDetector
 
 def start_transform() -> None:
 	# Input Excel
@@ -178,6 +179,23 @@ def start_transform() -> None:
 	
 	print("Stage 39 - Rows/columns - " + str(df_freshread.shape))
 	print("Stage 40 - Rows/columns - " + str(df_all.shape))
+
+	print("Stage 41 - Read in CSV file with automatic detection of encoding")
+
+	detector = UniversalDetector()
+	with open("../../outputs/csv/online_retail_II_combined.csv", "rb") as f:
+		for line in f:
+			detector.feed(line)
+			if detector.done:
+				break
+	detector.close()
+	enc = detector.result.get("encoding") or "utf-8"
+	confidence = detector.result.get("confidence")
+	print("\nGuessed encoding: ", enc, "with confidence: ", confidence)
+	# errors can be replace, ignore or strict. 
+	# Replace changes unreadable for placeholder, strict flags errors
+	with open("../../outputs/csv/online_retail_II_combined.csv", encoding=enc, errors="replace") as f:
+		df_test = pd.read_csv(f)
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
