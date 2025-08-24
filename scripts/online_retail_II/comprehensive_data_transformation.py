@@ -1,6 +1,7 @@
 # An example of a data transformation using a variety of tools
 
 import pandas as pd
+from glob import glob
 from pathlib import Path
 
 def start_transform() -> None:
@@ -165,6 +166,18 @@ def start_transform() -> None:
 
 	print("Stage 36 - Output preview13.html")
 	output_dataset_to_html(df_regex_work, "../../outputs/html/preview13.html")
+
+	print("Stage 37 - Add unique key to main dataset")
+	df_joined = df_joined.reset_index(drop=True); df_joined["RecordID"] = df_joined.index + 1
+
+	print("Stage 38 - Read in multiple CSV files and process them")
+	csv_files = glob("../../outputs/csv/*.csv")
+	df_freshread = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
+	df_list = [pd.read_csv(file) for file in csv_files]
+	df_all = pd.concat(df_list, ignore_index=True)
+	
+	print("Stage 39 - Rows/columns - " + str(df_freshread.shape))
+	print("Stage 40 - Rows/columns - " + str(df_all.shape))
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
