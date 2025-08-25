@@ -44,6 +44,17 @@ def start_transform() -> None:
 	print("Stage 7 - Clean up date field into dd-mm-yyy format")
 	df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"])
 	df_joined["InvoiceDate"] = df_joined['InvoiceDate'].dt.strftime("%d-%m-%Y")
+	#df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"], format="%d-%m-%Y") # Specify date format
+
+	# Datetime format codes:
+	# %Y=4-digit year (2025), %y=2-digit year (25), %m=month 01-12, %B=full month (August), %b=abbr month (Aug), %d=day 01-31
+	# %H=hour 00-23, %I=hour 01-12, %p=AM/PM, %M=minute 00-59, %S=second 00-59, %f=microseconds 000000-999999
+	# %z=UTC offset (+0000), %Z=timezone (UTC), %j=day of year 001-366, %U=week num (Sunday first), %W=week num (Monday first)
+	#
+	# Common patterns:
+	# "%Y-%m-%d"→2025-08-25, "%d-%m-%Y"→25-08-2025, "%m/%d/%Y"→08/25/2025
+	# "%d/%m/%Y %H:%M:%S"→25/08/2025 14:30:00, "%Y-%m-%d %H:%M:%S"→2025-08-25 14:30:00
+	# "%d-%b-%Y"→25-Aug-2025, "%b %d, %Y"→Aug 25, 2025
 	
 	print("Stage 8 - Select only a few fields")
 	df_subset = df_joined[["StockCode", "Description", "Price"]].copy()
@@ -196,6 +207,12 @@ def start_transform() -> None:
 	# Replace changes unreadable for placeholder, strict flags errors
 	with open("../../outputs/csv/online_retail_II_combined.csv", encoding=enc, errors="replace") as f:
 		df_test = pd.read_csv(f)
+
+	print("Stage 42 - Display the first three rows:\n")
+	print(df_joined.head(3).to_string())
+
+	print("\nStage 43 - Display the last three rows:\n")
+	print(df_joined.tail(3).to_string())
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
