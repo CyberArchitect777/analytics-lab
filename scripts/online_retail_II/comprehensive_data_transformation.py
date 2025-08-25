@@ -6,6 +6,35 @@ from pathlib import Path
 from chardet.universaldetector import UniversalDetector
 
 def start_transform() -> None:
+
+	# Stage 1  (Alteryx: Input Data) - Read singular CSV/Excel file
+	# Stage 2  (Alteryx: Field Summary / Browse) - Print number of rows and columns
+	# Stage 3  (Alteryx: Field Summary / Browse) - Print basic statistics on numerical fields
+	# Stage 4  (Alteryx: Field Summary / Browse) - Print data types of each field
+	# Stage 5  (Alteryx: Select) - Change data type
+	# Stage 6  (Alteryx: Formula / Data Cleansing) - Alter string data in a field
+	# Stage 7  (Alteryx: DateTime) - Change date field to a standard format
+	# Stage 8  (Alteryx: Select) - Select a few fields into a new dataset
+	# Stage 10 (Alteryx: Sort) - Sort dataset by a field
+	# Stage 12 (Alteryx: Unique) - Remove duplicates from the dataset
+	# Stage 14 (Alteryx: Summarize) - Group by a field and aggregate another field
+	# Stage 15 (Alteryx: Select) - Rename a field
+	# Stage 17 (Alteryx: Filter) - Filter dataset by a field value
+	# Stage 19 (Alteryx: Sample) - Provide a random sample of records
+	# Stage 21 (Alteryx: Formula) - Create a new field and calculate it using a formula
+	# Stage 22 (Alteryx: Text Input) - Create new datasets
+	# Stage 23 (Alteryx: Join) - Join two datasets by a common field
+	# Stage 25 (Alteryx: Append Fields) - Append a field from one dataset to another
+	# Stage 27 (Alteryx: Find Replace / Formula) - Find and replace text in a dataset field
+	# Stage 29 (Alteryx: Cross Tab) - Create a new dataset and apply crosstab
+	# Stage 31 (Alteryx: Sample + Transpose) - Select a few records and then transpose a dataset
+	# Stage 33 (Alteryx: Text To Columns) - Break up a data field into columns
+	# Stage 35 (Alteryx: Regex) - Use regex operations to manipulate data
+	# Stage 37 (Alteryx: Record ID) - Add unique key
+	# Stage 38 (Alteryx: Directory + Dynamic Input + Union) - Read in multiple CSV files and combine them into one dataset
+	# Stage 41 (Alteryx: Input Data) - Read CSV file with automatic detection of encoding
+	# Last stage (Alteryx: Render / Browse) - Output main dataset to HTML
+
 	# Input Excel
 	#print("\nStage 1 - Read Excel file...")
 	#df1 = pd.read_excel("../../data/online_retail_II/online_retail_II.xlsx", sheet_name=0)
