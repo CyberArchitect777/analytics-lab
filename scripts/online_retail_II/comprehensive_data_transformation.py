@@ -248,8 +248,8 @@ def start_transform() -> None:
 	output_dataset_to_html(df_joined, "../../outputs/html/preview.html")
 	
 def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
-	# Simple HTML export of the provided dataset
-	html_str = df.head(1000).to_html(index=False, border=0)
+	# Simple HTML export of the provided dataset. na_rep is the string to use for NaN/NaT values
+	html_str = df.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
 	Path(filename).write_text(html_str, encoding="utf-8")
 	
 if __name__ == "__main__":
