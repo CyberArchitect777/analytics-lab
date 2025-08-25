@@ -27,11 +27,11 @@ def start_transform() -> None:
 	# Stage 25 (Alteryx: Append Fields) - Append a field from one dataset to another
 	# Stage 27 (Alteryx: Find Replace / Formula) - Find and replace text in a dataset field
 	# Stage 29 (Alteryx: Cross Tab) - Create a new dataset and apply crosstab
-	# Stage 31 (Alteryx: Sample + Transpose) - Select a few records and then transpose a dataset
+	# Stage 31 (Alteryx: Select Records + Transpose) - Select a few records and then transpose a dataset
 	# Stage 33 (Alteryx: Text To Columns) - Break up a data field into columns
 	# Stage 35 (Alteryx: Regex) - Use regex operations to manipulate data
 	# Stage 37 (Alteryx: Record ID) - Add unique key
-	# Stage 38 (Alteryx: Directory + Dynamic Input + Union) - Read in multiple CSV files and combine them into one dataset
+	# Stage 38 (Alteryx: Directory + Dynamic Input + Union) - Read in multiple CSV files and combine the resulting datasets into one
 	# Stage 41 (Alteryx: Input Data) - Read CSV file with automatic detection of encoding
 	# Last stage (Alteryx: Render / Browse) - Output main dataset to HTML
 
@@ -211,7 +211,7 @@ def start_transform() -> None:
 	print("Stage 37 - Add unique key to main dataset")
 	df_joined = df_joined.reset_index(drop=True); df_joined["RecordID"] = df_joined.index + 1
 
-	print("Stage 38 - Read in multiple CSV files and process them")
+	print("Stage 38 - Read in multiple CSV files and merges the resulting datasets together")
 	csv_files = glob("../../outputs/csv/*.csv")
 	df_freshread = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
 	df_list = [pd.read_csv(file) for file in csv_files]
