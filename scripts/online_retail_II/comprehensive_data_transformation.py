@@ -243,7 +243,7 @@ def start_transform() -> None:
 	print("\nStage 43 - Display the last three rows:\n")
 	print(df_joined.tail(3).to_string())
 
-	print("\nStage 44 - Display a more styled HTML dataset output to preview14.html (limited to 1000 rows for performance):")
+	print("\nStage 44 - Display a more styled HTML dataset output to preview14.html (limited to 100 rows for performance):")
 	output_dataset_to_styled_html(df_joined, "../../outputs/html/preview14.html")
 
 	# Main preview output
@@ -257,13 +257,16 @@ def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
 
 def output_dataset_to_styled_html(df: pd.DataFrame, filename: str) -> None:
 	# More complex HTML export of the provided dataset with styling
-	df.head(1000) # Limit to first 1,000 rows for performance
+	df.head(100) # Limit to first 100 rows for performance
 	styler = (
 		df.style
-      		.highlight_max(subset=["Total_Price"], color="lightgreen")  # highlight max
-      		.highlight_min(subset=["Total_Price"], color="salmon")      # highlight min
-      		.map(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # negatives in red
+      		.highlight_max(subset=["Price"], color="green")  # highlight max
+      		.highlight_min(subset=["Price"], color="blue")      # highlight min
+      		.map(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # highlight all negative figures in red for all fields
       		.format({"Total_Price": "£{:.2f}", "Quantity": "{:,}"})     # nice number formats
+			.background_gradient(subset="Quantity", cmap="Blues")
+			.bar(subset=["Total_Price"], color="skyblue", align="mid")
+			.set_caption("Online Retail II Styled Dataset Partial Output")
 	)
 	html_str = styler.to_html()
 	Path(filename).write_text(html_str, encoding="utf-8")
