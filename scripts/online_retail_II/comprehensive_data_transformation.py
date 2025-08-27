@@ -6,6 +6,7 @@ from pathlib import Path
 from chardet.universaldetector import UniversalDetector
 import os
 import psutil
+import dask.dataframe as dd
 
 def start_transform() -> None:
 
@@ -268,6 +269,14 @@ def start_transform() -> None:
 	output_dataset_to_styled_html(df_joined, "../../outputs/html/preview14.html")
 
 	print("\nStage 44a - Current memory being used - " + provide_memory_usage_in_megabytes())
+
+	print("\nStage 45 - Open a dataset using Dask for low memory usage:")
+	df_dask = dd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
+	df_dask = df_dask.query("Price > 100")
+	df_dask = df_dask.compute() # Run operations here
+
+	print("Stage 46 - Output preview15.html")
+	output_dataset_to_html(df_dask, "../../outputs/html/preview15.html")
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
