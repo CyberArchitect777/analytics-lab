@@ -271,9 +271,9 @@ def start_transform() -> None:
 	print("\nStage 44a - Current memory being used - " + provide_memory_usage_in_megabytes())
 
 	print("\nStage 45 - Open a dataset using Dask for low memory usage:")
-	df_dask = dd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
+	df_dask = dd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8", dtype={'Invoice': 'object'})
 	df_dask = df_dask.query("Price > 100")
-	df_dask = df_dask.compute() # Run operations here
+	df_dask = df_dask.compute() # Run operations here. Writing the file out would also compute
 
 	print("Stage 46 - Output preview15.html")
 	output_dataset_to_html(df_dask, "../../outputs/html/preview15.html")
