@@ -48,8 +48,15 @@ initial_data = initial_data[initial_data["Quantity"] > 0]
 print("Stage 2 Dataset size (Rows Columns) - " + str(initial_data.shape))
 # Drop duplicate rows
 initial_data = initial_data.drop_duplicates()
-# Write out HTML representation of current dataset
-html_data = initial_data.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
-Path("../../outputs/html/tw1-cleaned.html").write_text(html_data, encoding="utf-8")
 # Evaluate stage 3 size of dataset
 print("Stage 3 Dataset size (Rows Columns) - " + str(initial_data.shape))
+# Calculate unique customers
+customer_data = initial_data.drop_duplicates(subset=["Customer ID"], keep="first")
+# Calculate number of total rows left in the dataset and the same in the customer_data dataset (which contains only unique customers)
+total_rows = initial_data.shape[0]
+unique_customer_rows = customer_data.shape[0]
+# Write out final HTML representation of current dataset
+initial_data = initial_data.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
+Path("../../outputs/html/tw1-cleaned.html").write_text(html_data, encoding="utf-8")
+# Print out the answer
+print("There are " + str(total_rows) + " total rows and " + str(unique_customer_rows) + " unique customers")
