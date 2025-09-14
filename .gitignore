@@ -1,3 +1,4 @@
 data/online_retail_II/online_retail_II (working).xlsx
 data/online_retail_II/~$online_retail_II (working).xlsx
 outputs/
+*.ipynb_checkpoints*
