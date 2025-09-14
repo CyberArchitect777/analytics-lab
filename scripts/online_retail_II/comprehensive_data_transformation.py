@@ -4,6 +4,9 @@ import pandas as pd
 from glob import glob
 from pathlib import Path
 from chardet.universaldetector import UniversalDetector
+import os
+import psutil
+import dask.dataframe as dd
 
 def start_transform() -> None:
 
@@ -12,6 +15,7 @@ def start_transform() -> None:
 	# Stage 3  (Alteryx: Field Summary / Browse) - Print basic statistics on numerical fields
 	# Stage 4  (Alteryx: Field Summary / Browse) - Print data types of each field
 	# Stage 5  (Alteryx: Select) - Change data type
+	# Stage 5a () - Output memory being used by this program
 	# Stage 6  (Alteryx: Formula / Data Cleansing) - Alter string data in a field
 	# Stage 7  (Alteryx: DateTime) - Change date field to a standard format
 	# Stage 8  (Alteryx: Select) - Select a few fields into a new dataset
@@ -64,6 +68,8 @@ def start_transform() -> None:
 	
 	print("\nStage 5 - Change data type of Customer ID to string")
 	df_joined = df_joined.astype({"Customer ID": "str"})
+
+	print("\nStage 5a - Current memory being used - " + provide_memory_usage_in_megabytes())
 	
 	print("Stage 6 - Clean up Customer ID field")
 	# Extract only numbers at the start of the field and replace blanks with -1
@@ -93,6 +99,8 @@ def start_transform() -> None:
 	
 	print("Stage 10 - Sort by StockCode")
 	df_subset = df_subset.sort_values(by=["StockCode","Price"], ascending=[True,True])
+
+	print("\nStage 10a - Current memory being used - " + provide_memory_usage_in_megabytes())
 	
 	print("Stage 11 - Output preview2.html")
 	output_dataset_to_html(df_subset, "../../outputs/html/preview2.html")
@@ -112,6 +120,8 @@ def start_transform() -> None:
 	
 	print("Stage 15 - Rename Total_Price to Total Price")
 	df_group = df_group.rename(columns={"Total_Price":"Total Price"})
+
+	print("\nStage 15a - Current memory being used - " + provide_memory_usage_in_megabytes())
 	
 	print("Stage 16 - Output preview4.html")
 	output_dataset_to_html(df_group, "../../outputs/html/preview4.html")
@@ -127,6 +137,8 @@ def start_transform() -> None:
 
 	print("Stage 20 - Output preview6.html")
 	output_dataset_to_html(df_random, "../../outputs/html/preview6.html")
+
+	print("\nStage 20a - Current memory being used - " + provide_memory_usage_in_megabytes())
 
 	print("Stage 21 - Create new fields Total_Price and Over_100 and calculate them using formulas")
 	df_joined = df_joined.assign(Total_Price=lambda x: x["Price"]*x["Quantity"], Over_100=lambda x: x["Total_Price"]>100)
@@ -156,6 +168,8 @@ def start_transform() -> None:
 	df3 = pd.DataFrame(dict_three)
 	df_merged = df_merged.merge(df3, how="cross")
 
+	print("\nStage 25a - Current memory being used - " + provide_memory_usage_in_megabytes())
+
 	print("Stage 26 - Output preview8.html")
 	output_dataset_to_html(df_merged, "../../outputs/html/preview8.html")
 
@@ -177,6 +191,8 @@ def start_transform() -> None:
 
 	print("Stage 30 - Output preview10.html")
 	output_dataset_to_html(df_sample_dataset, "../../outputs/html/preview10.html")
+
+	print("\nStage 30a - Current memory being used - " + provide_memory_usage_in_megabytes())
 
 	print("Stage 31 - Select a few records and then transpose the main dataset to a new one")
 	df_transposed = df_joined.iloc[0:10]
@@ -205,6 +221,8 @@ def start_transform() -> None:
 	df_regex_work = df_regex_work.astype({"Price": "str"})
 	df_regex_work["Is_Price_x.xx_Format"] = df_regex_work["Price"].str.match(r"^\d\.\d{2}.*$")
 
+	print("\nStage 35a - Current memory being used - " + provide_memory_usage_in_megabytes())
+
 	print("Stage 36 - Output preview13.html")
 	output_dataset_to_html(df_regex_work, "../../outputs/html/preview13.html")
 
@@ -219,6 +237,8 @@ def start_transform() -> None:
 	
 	print("Stage 39 - Rows/columns - " + str(df_freshread.shape))
 	print("Stage 40 - Rows/columns - " + str(df_all.shape))
+
+	print("\nStage 40a - Current memory being used - " + provide_memory_usage_in_megabytes())
 
 	print("Stage 41 - Read in CSV file with automatic detection of encoding")
 
@@ -243,8 +263,20 @@ def start_transform() -> None:
 	print("\nStage 43 - Display the last three rows:\n")
 	print(df_joined.tail(3).to_string())
 
+	print("\nStage 43a - Current memory being used - " + provide_memory_usage_in_megabytes())
+
 	print("\nStage 44 - Display a more styled HTML dataset output to preview14.html (limited to 1000 rows for performance):")
 	output_dataset_to_styled_html(df_joined, "../../outputs/html/preview14.html")
+
+	print("\nStage 44a - Current memory being used - " + provide_memory_usage_in_megabytes())
+
+	print("\nStage 45 - Open a dataset using Dask for low memory usage:")
+	df_dask = dd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8", dtype={'Invoice': 'object'})
+	df_dask = df_dask.query("Price > 100")
+	df_dask = df_dask.compute() # Run operations here. Writing the file out would also compute
+
+	print("Stage 46 - Output preview15.html")
+	output_dataset_to_html(df_dask, "../../outputs/html/preview15.html")
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
@@ -257,16 +289,25 @@ def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
 
 def output_dataset_to_styled_html(df: pd.DataFrame, filename: str) -> None:
 	# More complex HTML export of the provided dataset with styling
-	df.head(1000) # Limit to first 1,000 rows for performance
+	df = df.head(1000) # Limit to first 1000 rows for performance
 	styler = (
 		df.style
-      		.highlight_max(subset=["Total_Price"], color="lightgreen")  # highlight max
-      		.highlight_min(subset=["Total_Price"], color="salmon")      # highlight min
-      		.map(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # negatives in red
+      		.highlight_max(subset=["Price"], color="lightgreen")  # highlight max
+      		.highlight_min(subset=["Price"], color="lightblue")      # highlight min
+      		.map(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # highlight all negative figures in red for all fields
       		.format({"Total_Price": "£{:.2f}", "Quantity": "{:,}"})     # nice number formats
+			.background_gradient(subset="Quantity", cmap="Greens")
+			.bar(subset=["Total_Price"], color="lightblue", align="mid")
+			.set_caption("Online Retail II Styled Dataset Partial Output")
 	)
 	html_str = styler.to_html()
 	Path(filename).write_text(html_str, encoding="utf-8")
+
+def provide_memory_usage_in_megabytes() -> str:
+	process = psutil.Process(os.getpid())
+	# rss = Resident Set Size
+	memory_info = round((process.memory_info().rss) / (1024 ** 2), 2)
+	return str(memory_info) + "MB"
 	
 if __name__ == "__main__":
 	start_transform()
