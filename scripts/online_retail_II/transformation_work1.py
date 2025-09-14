@@ -30,3 +30,26 @@
 # - Plot monthly revenue as a line chart.
 # - Identify month with highest revenue.
 
+import pandas as pd
+from pathlib import Path
+
+# Load CSV transformed original dataset
+initial_data = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
+# Write out HTML representation of original dataset
+html_data = initial_data.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
+Path("../../outputs/html/tw1-original.html").write_text(html_data, encoding="utf-8")
+# Evaluate stage 1 size of dataset
+print("Stage 1 Dataset size (Rows Columns) - " + str(initial_data.shape))
+# Remove rows where Customer ID is missing
+initial_data = initial_data.dropna(subset=["Customer ID"])
+# Remove rows where Quantity is less than or equal to 0
+initial_data = initial_data[initial_data["Quantity"] > 0]
+# Evaluate stage 2 size of dataset
+print("Stage 2 Dataset size (Rows Columns) - " + str(initial_data.shape))
+# Drop duplicate rows
+initial_data = initial_data.drop_duplicates()
+# Write out HTML representation of current dataset
+html_data = initial_data.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
+Path("../../outputs/html/tw1-cleaned.html").write_text(html_data, encoding="utf-8")
+# Evaluate stage 3 size of dataset
+print("Stage 3 Dataset size (Rows Columns) - " + str(initial_data.shape))
