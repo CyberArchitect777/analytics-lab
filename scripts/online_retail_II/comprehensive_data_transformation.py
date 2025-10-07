@@ -37,6 +37,7 @@ def start_transform() -> None:
 	# Stage 37 (Alteryx: Record ID) - Add unique key
 	# Stage 38 (Alteryx: Directory + Dynamic Input + Union) - Read in multiple CSV files and combine the resulting datasets into one
 	# Stage 41 (Alteryx: Input Data) - Read CSV file with automatic detection of encoding
+	# Stage 47 (Alteryx: Select) - Remove one column
 	# Last stage (Alteryx: Render / Browse) - Output main dataset to HTML
 
 	# Input Excel
@@ -278,6 +279,9 @@ def start_transform() -> None:
 
 	print("Stage 46 - Output preview15.html")
 	output_dataset_to_html(df_dask, "../../outputs/html/preview15.html")
+
+	print("Stage 47 - Remove one column")
+	df_joined = df_joined.drop("Over_100", axis=1)
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
