@@ -79,7 +79,10 @@ def start_transform() -> None:
 	
 	print("Stage 7 - Clean up date field into dd-mm-yyy format")
 	# Mixed can be risky and should be used with dayFirst. It infers the date for each row separately.
-	df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"], format="mixed", dayfirst=True)
+	# Not compatible with Pandas before 2.2
+	#df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"], format="mixed", dayfirst=True)
+	# Earlier Pandas compatible version
+	df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"], dayfirst=True, errors="coerce")
 	df_joined["InvoiceDate"] = df_joined['InvoiceDate'].dt.strftime("%d-%m-%Y")
 	#df_joined["InvoiceDate"] = pd.to_datetime(df_joined["InvoiceDate"], format="%d-%m-%Y") # Specify date format
 
