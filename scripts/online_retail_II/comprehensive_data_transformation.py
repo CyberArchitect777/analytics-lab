@@ -38,6 +38,7 @@ def start_transform() -> None:
 	# Stage 38 (Alteryx: Directory + Dynamic Input + Union) - Read in multiple CSV files and combine the resulting datasets into one
 	# Stage 41 (Alteryx: Input Data) - Read CSV file with automatic detection of encoding
 	# Stage 47 (Alteryx: Select) - Remove one column
+	# Stage 48 (Alteryx: Multi-Row Formula) - Calculate a journal ID by finding out all records with an invoice number equal or one more than the previous
 	# Last stage (Alteryx: Render / Browse) - Output main dataset to HTML
 
 	# Input Excel
@@ -285,6 +286,26 @@ def start_transform() -> None:
 
 	print("Stage 47 - Remove one column")
 	df_joined = df_joined.drop("Over_100", axis=1)
+
+	print("Stage 48 - Calculate a journal ID by finding out all records with an invoice number equal or one more than the previous")
+	df_generated = df_joined.copy()
+	# Not all invoices are numbers so convert any alpha characters to the number equal to their position
+	# in the alphabet (A=1, B=2, C=3 etc)
+	#df_generated["Generated Invoice"] = df_joined["Invoice"].str.upper()
+	#df_generated["Generated Invoice"] = df_generated["Generated Invoice"].apply(lambda x: ''.join(str(ord(char) - 64) if char.isalpha() else char for char in x))
+	#df_generated = df_generated[df_generated["Invoice"] != ""] # Remove any blank Invoice rows
+	#df_generated["Invoice"] = df_generated["Invoice"].astype("int")
+	# Sort by Invoice number and then compare
+	#df_joined.sort_values(by=["Invoice"], ascending=[True], inplace=True)
+	#df_joined["Prev_Invoice"] = df_joined["Invoice"].shift(1)
+	#df_joined["Prev_Invoice"] = df_joined["Prev_Invoice"].fillna(0)
+	#df_joined["Prev_Invoice"] = df_joined["Prev_Invoice"].astype("int")
+	#df_joined["Invoice"] = df_joined["Invoice"].astype("int")
+	#df_joined["Journal_ID"] = (df_joined["Invoice"] - df_joined["Prev_Invoice"] == 0 or df_joined["Invoice"] - df_joined["Prev_Invoice"] == 1).cumsum()
+	#df_joined.drop("Prev_Invoice", axis=1, inplace=True)
+
+	print("Stage 49 - Output preview16.html")
+	output_dataset_to_html(df_dask, "../../outputs/html/preview16.html")
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
