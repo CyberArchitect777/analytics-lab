@@ -302,7 +302,7 @@ def output_dataset_to_styled_html(df: pd.DataFrame, filename: str) -> None:
 		df.style
       		.highlight_max(subset=["Price"], color="lightgreen")  # highlight max
       		.highlight_min(subset=["Price"], color="lightblue")      # highlight min
-      		.map(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # highlight all negative figures in red for all fields
+      		.applymap(lambda v: "color: red;" if isinstance(v, (int, float)) and v < 0 else "")  # highlight all negative figures in red for all fields
       		.format({"Total_Price": "£{:.2f}", "Quantity": "{:,}"})     # nice number formats
 			.background_gradient(subset="Quantity", cmap="Greens")
 			.bar(subset=["Total_Price"], color="lightblue", align="mid")
