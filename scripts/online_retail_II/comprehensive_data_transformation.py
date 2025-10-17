@@ -291,21 +291,19 @@ def start_transform() -> None:
 	df_generated = df_joined.copy()
 	# Not all invoices are numbers so convert any alpha characters to the number equal to their position
 	# in the alphabet (A=1, B=2, C=3 etc)
-	#df_generated["Generated Invoice"] = df_joined["Invoice"].str.upper()
-	#df_generated["Generated Invoice"] = df_generated["Generated Invoice"].apply(lambda x: ''.join(str(ord(char) - 64) if char.isalpha() else char for char in x))
-	#df_generated = df_generated[df_generated["Invoice"] != ""] # Remove any blank Invoice rows
-	#df_generated["Invoice"] = df_generated["Invoice"].astype("int")
+	df_generated["Generated Invoice"] = df_joined["Invoice"].str.upper()
+	df_generated["Generated Invoice"] = df_generated["Generated Invoice"].apply(lambda x: ''.join(str(ord(char) - 64) if char.isalpha() else char for char in x))
+	df_generated["Invoice"] = df_generated["Generated Invoice"].astype("int")
 	# Sort by Invoice number and then compare
-	#df_joined.sort_values(by=["Invoice"], ascending=[True], inplace=True)
-	#df_joined["Prev_Invoice"] = df_joined["Invoice"].shift(1)
-	#df_joined["Prev_Invoice"] = df_joined["Prev_Invoice"].fillna(0)
-	#df_joined["Prev_Invoice"] = df_joined["Prev_Invoice"].astype("int")
-	#df_joined["Invoice"] = df_joined["Invoice"].astype("int")
-	#df_joined["Journal_ID"] = (df_joined["Invoice"] - df_joined["Prev_Invoice"] == 0 or df_joined["Invoice"] - df_joined["Prev_Invoice"] == 1).cumsum()
-	#df_joined.drop("Prev_Invoice", axis=1, inplace=True)
+	df_generated.sort_values(by=["Invoice"], ascending=[True], inplace=True)
+	df_generated["Prev_Invoice"] = df_generated["Invoice"].shift(1)
+	df_generated["Prev_Invoice"] = df_generated["Prev_Invoice"].fillna(0)
+	df_generated["Prev_Invoice"] = df_generated["Prev_Invoice"].astype("int")
+	df_generated["Journal_ID"] = (df_generated["Invoice"] - df_generated["Prev_Invoice"] > 1).cumsum()
+	df_generated.drop({"Prev_Invoice", "Generated Invoice"}, axis=1, inplace=True)
 
 	print("Stage 49 - Output preview16.html")
-	output_dataset_to_html(df_dask, "../../outputs/html/preview16.html")
+	output_dataset_to_html(df_generated, "../../outputs/html/preview16.html")
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
