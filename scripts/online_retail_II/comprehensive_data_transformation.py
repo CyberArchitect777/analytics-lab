@@ -7,6 +7,9 @@ from chardet.universaldetector import UniversalDetector
 import os
 import psutil
 import dask.dataframe as dd
+import random
+from datetime import datetime, timedelta
+import string
 
 def start_transform() -> None:
 
@@ -304,6 +307,30 @@ def start_transform() -> None:
 
 	print("Stage 49 - Output preview16.html")
 	output_dataset_to_html(df_generated, "../../outputs/html/preview16.html")
+	
+	print("Stage 50 - Generate 6GB dataset for large file testing and write to CSV (if file doesn't exist)")
+	if not os.path.exists("../../outputs/csv/generated_big_file.csv"):
+		total_rows = 150000000
+		chunk_size = 1000000
+		current_chunk = 0
+		while current_chunk <= total_rows:
+			print("* Creating record " + str(current_chunk+1) + " to " + str(current_chunk + 1000000))
+			big_data = {
+		    	"AccountCode": [random.randint(10000, 99999) for _ in range(chunk_size)],
+		    	"TransactionID": [i + 1 for i in range(chunk_size)],
+		    	"Net": [round(random.uniform(0, 100), 2) for _ in range(chunk_size)],
+		    	# _ is a placeholder, not an accessible variable
+		    	"Date": [
+		    (datetime(2025, 1, 1) + timedelta(days=random.randint(0, 364))).strftime("%Y-%m-%d")
+		    for _ in range(chunk_size)],
+		    	"Reference": ["".join(random.choices(string.ascii_uppercase + string.digits, k=8)) for _ in range(chunk_size)],
+		}
+			chunk_dataframe = pd.DataFrame(big_data)
+			if current_chunk == 0:
+				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", index=False, encoding="utf-8", lineterminator="\n", header=True)
+			else:
+				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", mode="a", index=False, encoding="utf-8", lineterminator="\n", header=False)
+			current_chunk += 1000000
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
