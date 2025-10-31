@@ -1,11 +1,13 @@
 # An example of a data transformation techniques on a very large dataset
 # requiring efficient memory usage.
-	
+
+from datetime import datetime, timedelta	
 import os
 import pandas as pd
 import random
 import string
-from datetime import datetime, timedelta
+import dask.dataframe as dd
+import polars as pl
 
 def generate_dataset():
 	if not os.path.exists("../../outputs/csv/generated_big_file.csv"):
@@ -31,6 +33,22 @@ def generate_dataset():
 				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", mode="a", index=False, encoding="utf-8", lineterminator="\n", header=False)
 			current_chunk += 1000000
 
+def dask_transformation():
+	pass
+
+def polars_transformation():
+	pass
+
+def chunked_pandas_transformation():
+	pass
+
 if __name__ == "__main__":
 	print("Stage 1 - Generate 6GB dataset for large file testing and write to CSV (if file doesn't exist)")
 	generate_dataset()
+	print("Stage 2 - Conduct data transformation using Dask")
+	dask_transformation()
+	print("Stage 3 - Conduct data transformation using Polars")
+	polars_transformation()
+	print("Stage 4 - Conduct data transformation using Chunked Pandas Reading")
+	chunked_pandas_transformation()
+	
