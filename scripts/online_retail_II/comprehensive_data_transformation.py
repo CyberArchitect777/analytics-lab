@@ -239,7 +239,7 @@ def start_transform() -> None:
 	df_joined = df_joined.reset_index(drop=True); df_joined["RecordID"] = df_joined.index + 1
 
 	print("Stage 38 - Read in multiple CSV files and merges the resulting datasets together")
-	csv_files = glob("../../outputs/csv/*.csv")
+	csv_files = glob("../../outputs/csv/online*.csv")
 	df_freshread = pd.read_csv("../../outputs/csv/online_retail_II_combined.csv", encoding="utf-8")
 	df_list = [pd.read_csv(file) for file in csv_files]
 	df_all = pd.concat(df_list, ignore_index=True)
@@ -317,7 +317,7 @@ def start_transform() -> None:
 			print("* Creating record " + str(current_chunk+1) + " to " + str(current_chunk + 1000000))
 			big_data = {
 		    	"AccountCode": [random.randint(10000, 99999) for _ in range(chunk_size)],
-		    	"TransactionID": [i + 1 for i in range(chunk_size)],
+		    	"TransactionID": [i + 1 + chunk_size for i in range(chunk_size)],
 		    	"Net": [round(random.uniform(0, 100), 2) for _ in range(chunk_size)],
 		    	# _ is a placeholder, not an accessible variable
 		    	"Date": [
@@ -331,6 +331,20 @@ def start_transform() -> None:
 			else:
 				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", mode="a", index=False, encoding="utf-8", lineterminator="\n", header=False)
 			current_chunk += 1000000
+			
+	print("\nStage 51 - Use dask to add a new column to the data showing if Net is more than 50.")
+	df_bigfile = dd.read_csv("../../outputs/csv/generated_big_file.csv", encoding="utf-8", dtype=str, blocksize="1024mb")
+	df_bigfile["Net"] = df_bigfile["Net"].astype("float")
+	df_bigfile["Over_50"] = df_bigfile["Net"] > 50
+	first_partition = True
+	for df_bigfile_partition in df_bigfile.partitions:
+		df_bigfile_partition.compute().to_csv(
+			"../../outputs/csv/processed_bigfile1.csv",
+			mode="a",
+			header=first,
+			index=False
+		)
+		first_partition = False
 
 	# Main preview output
 	print("\nLast stage - Output main dataset table to HTML\n")
