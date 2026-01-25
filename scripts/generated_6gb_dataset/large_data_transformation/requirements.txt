@@ -8,12 +8,8 @@ numpy==2.4.1
     # via pandas
 pandas==2.3.3
     # via -r requirements.in
-psutils==3.3.14
+psutil==7.2.1
     # via -r requirements.in
-puremagic==1.30
-    # via psutils
-pypdf==6.6.1
-    # via psutils
 python-dateutil==2.9.0.post0
     # via pandas
 pytz==2025.2

@@ -8,12 +8,13 @@ import random
 import string
 #import dask.dataframe as dd
 #import polars as pl
-#import psutil
+import psutil
 from pathlib import Path
 #from dask import compute
 
+generated_file_location = "../../../outputs/csv/generated_big_file.csv"
+
 def generate_dataset():
-	generated_file_location = "../../../outputs/csv/generated_big_file.csv"
 	if not os.path.exists(generated_file_location):
 		# Find generated_file_location directory
 		os.makedirs(os.path.dirname(generated_file_location), exist_ok=True)
@@ -48,10 +49,15 @@ def generate_dataset():
 
 def pandas_transformation():
 	pass
-	#print("\nStarting memory usage: " + provide_memory_usage_in_megabytes())
-	#df = pd.read_csv("../../outputs/csv/generated_big_file.csv", dtype="str")
-	#print("Total transactions in dataset: " + str(df.shape[0]))
-	#january_transactions = df[df["Date"].str.startswith("2025-01")]
+	print("\nStarting memory usage: " + provide_memory_usage_in_megabytes())
+	start_time = datetime.now()
+	df = pd.read_csv(generated_file_location, dtype="str")
+	print("Total transactions in dataset: " + str(df.shape[0]))
+	print("Total transactions in January" + str(df[df["Date"].str.startswith("2025-01")].shape[0]))
+	print("Total sum of Net column:" + str(df["Net"].astype("float64").sum()))
+	print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
+	end_time = datetime.now()
+	print("Time taken to read dataset and calculate variables: " + str(end_time - start_time))
 		
 def dask_transformation():
 	pass
