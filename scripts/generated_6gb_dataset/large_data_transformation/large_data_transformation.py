@@ -6,14 +6,17 @@ import os
 import pandas as pd
 import random
 import string
-import dask.dataframe as dd
-import polars as pl
-import psutil
+#import dask.dataframe as dd
+#import polars as pl
+#import psutil
 from pathlib import Path
-from dask import compute
+#from dask import compute
 
 def generate_dataset():
-	if not os.path.exists("../../outputs/csv/generated_big_file.csv"):
+	generated_file_location = "../../../outputs/csv/generated_big_file.csv"
+	if not os.path.exists(generated_file_location):
+		# Find generated_file_location directory
+		os.makedirs(os.path.dirname(generated_file_location), exist_ok=True)
 		print("\nGenerating large dataset...\n")
 		total_rows = 150000000
 		chunk_size = 1000000
@@ -33,18 +36,26 @@ def generate_dataset():
 			chunk_dataframe = pd.DataFrame(big_data)
 			print("\n" + str(len(chunk_dataframe)) + " records in generated dataset")
 			if current_chunk == 0:
-				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", index=False, encoding="utf-8", lineterminator="\n", header=True)
+				chunk_dataframe.to_csv(generated_file_location, index=False, encoding="utf-8", lineterminator="\n", header=True)
 			else:
-				chunk_dataframe.to_csv("../../outputs/csv/generated_big_file.csv", mode="a", index=False, encoding="utf-8", lineterminator="\n", header=False)
+				chunk_dataframe.to_csv(generated_file_location, mode="a", index=False, encoding="utf-8", lineterminator="\n", header=False)
 			current_chunk += 1000000
 	else:
 		# Count number of lines in existing file
-		with open("../../outputs/csv/generated_big_file.csv", "r", encoding="utf-8") as f:
+		with open(generated_file_location, "r", encoding="utf-8") as f:
 			line_count = sum(1 for line in f) - 1  # subtract 1 for header
 		print(f"\nUsing previously generated large dataset with {line_count} records.\n")
-	
 
+def pandas_transformation():
+	pass
+	#print("\nStarting memory usage: " + provide_memory_usage_in_megabytes())
+	#df = pd.read_csv("../../outputs/csv/generated_big_file.csv", dtype="str")
+	#print("Total transactions in dataset: " + str(df.shape[0]))
+	#january_transactions = df[df["Date"].str.startswith("2025-01")]
+		
 def dask_transformation():
+	pass
+	"""
 	print("\nStarting memory usage: " + provide_memory_usage_in_megabytes())
 	df = dd.read_csv("../../outputs/csv/generated_big_file.csv", dtype={"AccountCode": "int64", "TransactionID": "int64", "Net": "float64", "Date": "object", "Reference": "object"})
 	total_transactions, january_transactions, net_sum = compute(df.shape[0], 
@@ -53,13 +64,13 @@ def dask_transformation():
 	print("Total transactions in dataset: " + str(total_transactions))
 	print("Total transactions in January" + str(january_transactions))
 	print("Total sum of Net column:" + str(net_sum))
-	print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
+	#print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
 	df["Promotion"] = df["Net"] * (random.random() * 0.2)
 	df["Same Day Transactions"] = df.groupby("Date")["TransactionID"].transform("count")
 	df.compute()
 	print("Memory usage after transformation: " + provide_memory_usage_in_megabytes())
 	output_dataset_to_html(df.compute(), "../../outputs/html/dask_preview1.html")
-
+	"""
 def polars_transformation():
 	pass
 
@@ -80,10 +91,12 @@ def provide_memory_usage_in_megabytes() -> str:
 if __name__ == "__main__":
 	print("\nStage 1 - Generate 6GB dataset for large file testing and write to CSV (if file doesn't exist)")
 	generate_dataset()
-	print("Stage 2 - Conduct data transformation using Dask")
+	print("Stage 2 - Conduct data transformation using Pandas")
+	pandas_transformation()
+	print("Stage 3 - Conduct data transformation using Dask")
 	dask_transformation()
-	print("Stage 3 - Conduct data transformation using Polars")
+	print("Stage 4 - Conduct data transformation using Polars")
 	polars_transformation()
-	print("Stage 4 - Conduct data transformation using Chunked Pandas Reading")
+	print("Stage 5 - Conduct data transformation using Chunked Pandas Reading")
 	chunked_pandas_transformation()
 	
