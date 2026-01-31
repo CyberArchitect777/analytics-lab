@@ -55,9 +55,12 @@ def pandas_transformation():
 	print("Total transactions in dataset: " + str(df.shape[0]))
 	print("Total transactions in January: " + str(df[df["Date"].str.startswith("2025-01")].shape[0]))
 	print("Total sum of Net column: " + str(df["Net"].astype("float64").sum()))
-	print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
+	df["Promotion"] = df["Net"].astype("float64") * (random.random() * 0.2)
+	df["Same Day Transactions"] = df.groupby("Date")["TransactionID"].transform("count")
 	end_time = datetime.now()
+	print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
 	print("Time taken to read dataset and calculate variables: " + str(end_time - start_time))
+	output_dataset_to_html(df, "../../outputs/html/pandas_preview1.html")
 		
 def dask_transformation():
 	pass
