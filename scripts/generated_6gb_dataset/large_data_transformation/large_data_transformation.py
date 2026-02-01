@@ -48,19 +48,26 @@ def generate_dataset():
 		print(f"\nUsing previously generated large dataset with {line_count} records.\n")
 
 def pandas_transformation():
-	pass
-	print("\nStarting memory usage: " + provide_memory_usage_in_megabytes())
-	start_time = datetime.now()
-	df = pd.read_csv(generated_file_location, dtype="str")
-	print("Total transactions in dataset: " + str(df.shape[0]))
-	print("Total transactions in January: " + str(df[df["Date"].str.startswith("2025-01")].shape[0]))
-	print("Total sum of Net column: " + str(df["Net"].astype("float64").sum()))
-	df["Promotion"] = df["Net"].astype("float64") * (random.random() * 0.2)
-	df["Same Day Transactions"] = df.groupby("Date")["TransactionID"].transform("count")
-	end_time = datetime.now()
-	print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
-	print("Time taken to read dataset and calculate variables: " + str(end_time - start_time))
-	output_dataset_to_html(df, "../../outputs/html/pandas_preview1.html")
+	row_scan = [5000000, 10000000, 25000000, 50000000, 100000000, 200000000] # 150 million rows total in large dataset
+	for index, rownumber in enumerate(row_scan):
+		try:
+			print(f"\n----- Pandas Transformation - Scan {index + 1} - Reading first {rownumber} rows from dataset -----\n")
+			start_time = datetime.now()
+			df = pd.read_csv(generated_file_location, dtype="str", nrows=rownumber)
+			print("Total transactions in dataset: " + str(df.shape[0]))
+			print("Total transactions in January: " + str(df[df["Date"].str.startswith("2025-01")].shape[0]))
+			print("Total sum of Net column: " + str(df["Net"].astype("float64").sum()))
+			df["Promotion"] = df["Net"].astype("float64") * (random.random() * 0.2)
+			df["Same Day Transactions"] = df.groupby("Date")["TransactionID"].transform("count")
+			end_time = datetime.now()
+			print("Promotion and same day transaction calculations completed.")
+			print("\nMemory usage after variable calculation: " + provide_memory_usage_in_megabytes())
+			print("Time taken to read dataset and calculate variables: " + str(end_time - start_time))
+			output_dataset_to_html(df, "../../../outputs/html/pandas_preview1-" + str(index + 1) + ".html")
+		except MemoryError:
+			# Soft limit halt for memory limits, OS may just close the process instead
+			print("MemoryError: Unable to process " + str(rownumber) + " rows with Pandas due to insufficient memory.")
+			break
 		
 def dask_transformation():
 	pass
@@ -78,7 +85,7 @@ def dask_transformation():
 	df["Same Day Transactions"] = df.groupby("Date")["TransactionID"].transform("count")
 	df.compute()
 	print("Memory usage after transformation: " + provide_memory_usage_in_megabytes())
-	output_dataset_to_html(df.compute(), "../../outputs/html/dask_preview1.html")
+	output_dataset_to_html(df.compute(), "../../../outputs/html/dask_preview1.html")
 	"""
 def polars_transformation():
 	pass
@@ -88,6 +95,8 @@ def chunked_pandas_transformation():
 
 def output_dataset_to_html(df: pd.DataFrame, filename: str) -> None:
 	# Simple HTML export of the provided dataset. na_rep is the string to use for NaN/NaT values
+	if not os.path.exists(os.path.dirname(filename)):
+		os.makedirs(os.path.dirname(filename), exist_ok=True)
 	html_str = df.head(1000).to_html(index=False, border=0, justify="left", na_rep="")
 	Path(filename).write_text(html_str, encoding="utf-8")
 
@@ -100,7 +109,7 @@ def provide_memory_usage_in_megabytes() -> str:
 if __name__ == "__main__":
 	print("\nStage 1 - Generate 6GB dataset for large file testing and write to CSV (if file doesn't exist)")
 	generate_dataset()
-	print("Stage 2 - Conduct data transformation using Pandas")
+	print("Stage 2 - Conduct data transformation using Pandas. Process may likely be killed at some stage due to memory limit.")
 	pandas_transformation()
 	print("Stage 3 - Conduct data transformation using Dask")
 	dask_transformation()
